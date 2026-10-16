@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaultly — Secure Password Vault</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">✳</span>
+        <span>vaultly<span class="brand-dot">.</span></span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active" id="dashboardNav">
+        <span>▦</span> Dashboard
+      </button>
+      <button class="nav-item" id="allNav">
+        <span>▤</span> All passwords
+        <span class="nav-count" id="navCount">0</span>
+      </button>
+
+      <div class="side-label security-label">SECURITY</div>
+      <div class="security-card">
+        <div class="security-icon">♢</div>
+        <strong>Your vault, your rules.</strong>
+        <p>Your saved passwords are encrypted before they reach the database.</p>
+        <span class="secure-status"><span></span> Local vault</span>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="avatar">V</div>
+        <div class="profile">
+          <strong>Personal vault</strong>
+          <span>Private workspace</span>
+        </div>
+        <button id="lockBtn" class="icon-button" title="Lock vault">⌑</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">YOUR PRIVATE SPACE</div>
+          <h1>Good to see you <span class="wave">✦</span></h1>
+          <p class="subheading">Everything important, safely in one place.</p>
+        </div>
+
+        <div class="top-actions">
+          <button id="themeToggle" class="theme-toggle" title="Toggle dark/light mode">
+            <span id="themeIcon">☾</span>
+            <span id="themeLabel">Dark mode</span>
+          </button>
+          <button id="addBtn" class="primary-btn"><span>＋</span> Add password</button>
+        </div>
+      </header>
+
+      <section id="authPanel" class="auth-panel hidden">
+        <div class="auth-art">✳</div>
+        <div class="eyebrow">YOUR PERSONAL VAULT</div>
+        <h2 id="authTitle">A little privacy goes a long way.</h2>
+        <p id="authDescription">Create a master password to protect your vault.</p>
+        <form id="authForm">
+          <label for="masterPassword">Master password</label>
+          <input id="masterPassword" type="password" minlength="12"
+                 placeholder="At least 12 characters" required autocomplete="current-password">
+          <label for="confirmPassword" id="confirmLabel" class="hidden">Confirm master password</label>
+          <input id="confirmPassword" class="hidden" type="password"
+                 placeholder="Enter it again" autocomplete="new-password">
+          <button id="authSubmit" class="primary-btn full-width" type="submit">Create secure vault →</button>
+          <p class="auth-note">Remember this password. There is no password-reset service in this demo.</p>
+        </form>
+      </section>
+
+      <div id="vaultContent">
+        <section class="welcome-banner">
+          <div class="banner-copy">
+            <div class="banner-tag"><span>✦</span> YOUR DIGITAL SAFE</div>
+            <h2>One vault.<br>Less to remember.</h2>
+            <p>Keep your digital life organized and protected.</p>
+            <button id="bannerAddBtn" class="banner-btn">Save your first password <span>→</span></button>
+          </div>
+          <div class="banner-visual" aria-hidden="true">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="vault-illustration">
+              <div class="vault-top">✳</div>
+              <div class="vault-lock">⌑</div>
+            </div>
+            <div class="floating-chip chip-one">✦ Encrypted</div>
+            <div class="floating-chip chip-two">✓ Private</div>
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total passwords</span><span class="stat-icon purple">▤</span></div>
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-foot">Saved in your vault</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Categories</span><span class="stat-icon blue">◇</span></div>
+            <div class="stat-number" id="categoryCount">0</div>
+            <div class="stat-foot">Different services</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Vault status</span><span class="stat-icon green">✓</span></div>
+            <div class="stat-number status-number">Protected</div>
+            <div class="stat-foot"><span class="status-dot"></span> Encryption enabled</div>
+          </article>
+        </section>
+
+        <section class="password-section">
+          <div class="section-heading">
+            <div>
+              <h2>Your passwords</h2>
+              <p>A tidy home for all your credentials.</p>
+            </div>
+            <button id="refreshBtn" class="icon-button" title="Refresh">↻</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="searchInput" type="search" placeholder="Search websites or usernames...">
+              <kbd>/</kbd>
+            </div>
+            <select id="categoryFilter" aria-label="Filter by category">
+              <option value="all">All categories</option>
+              <option value="Social">Social</option>
+              <option value="Work">Work</option>
+              <option value="Finance">Finance</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div id="message" class="message hidden" role="status"></div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>WEBSITE</th>
+                  <th>USERNAME</th>
+                  <th>PASSWORD</th>
+                  <th>CATEGORY</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="passwordList"></tbody>
+            </table>
+            <div id="emptyState" class="empty-state">
+              <div class="empty-icon">♧</div>
+              <h3>Your vault is ready for its first secret</h3>
+              <p>Add a login and it will appear here, neatly organized.</p>
+              <button id="emptyAddBtn" class="primary-btn">＋ Add your first password</button>
+            </div>
+          </div>
+          <div class="table-footer">
+            <span id="resultCount">0 entries</span>
+            <span><span class="status-dot"></span> Stored locally in your Docker environment</span>
+          </div>
+        </section>
+
+        <footer class="page-footer">
+          <span>✳ vaultly.</span>
+          <span>Privacy is a good habit.</span>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <div id="passwordModal" class="modal hidden">
+    <div class="modal-backdrop" data-close="true"></div>
+    <section class="modal-card">
+      <div class="modal-heading">
+        <div>
+          <div class="eyebrow">YOUR PASSWORD COLLECTION</div>
+          <h2 id="modalTitle">Add a password</h2>
+          <p>Enter the details you want to keep safe.</p>
+        </div>
+        <button id="closeModal" class="icon-button" aria-label="Close">✕</button>
+      </div>
+
+      <form id="passwordForm">
+        <label for="website">Website or service</label>
+        <input id="website" maxlength="120" placeholder="e.g. GitHub" required>
+
+        <label for="username">Username or email</label>
+        <input id="username" maxlength="254" placeholder="you@example.com" required>
+
+        <label for="sitePassword">Password</label>
+        <div class="password-input">
+          <input id="sitePassword" type="password" maxlength="4096"
+                 placeholder="Enter your password" required autocomplete="new-password">
+          <button type="button" id="generateBtn" class="text-button">Generate</button>
+          <button type="button" id="showInputBtn" class="text-button">Show</button>
+        </div>
+
+        <label for="category">Category</label>
+        <select id="category">
+          <option>Social</option>
+          <option>Work</option>
+          <option>Finance</option>
+          <option>Shopping</option>
+          <option>Other</option>
+        </select>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelModal" class="secondary-btn">Cancel</button>
+          <button type="submit" id="saveBtn" class="primary-btn">Save securely →</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>

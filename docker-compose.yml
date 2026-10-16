@@ -1,0 +1,57 @@
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vault-frontend
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - vault-network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: vault-backend
+    environment:
+      MONGO_URI: "mongodb://vaultadmin:${MONGO_PASSWORD}@mongodb:27017/?authSource=admin"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - vault-network
+
+  mongodb:
+    image: mongo:8
+    container_name: vault-database
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vaultadmin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - vault-data:/data/db
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - "mongodb://vaultadmin:${MONGO_PASSWORD}@localhost:27017/admin?authSource=admin"
+        - --eval
+        - "db.adminCommand('ping').ok"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - vault-network
+
+networks:
+  vault-network:
+    driver: bridge
+
+volumes:
+  vault-data:
